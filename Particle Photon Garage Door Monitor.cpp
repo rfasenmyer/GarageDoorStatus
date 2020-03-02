@@ -17,6 +17,9 @@ void setup() {
   
 //send push notification that the system is online
 Spark.publish("GarageEvent", "Garage Door Monitor is Online", 60, PRIVATE);
+//Send  to Particle event log
+Particle.variable("DoorStatus", "The Garage Door Monitor is Online");
+
 
 }
 
@@ -26,12 +29,11 @@ void loop() {
     int currentDoorStatus = digitalRead(door);
 
 
+
     //Call moniterDoor function and pass it the current door status.
      moniterDoor(currentDoorStatus);
     
 }
-
-
 
 //Garage door moniter function
 void moniterDoor(int startingDoorState){
@@ -78,6 +80,10 @@ void moniterDoor(int startingDoorState){
                     //send pushover notification
                     Spark.publish("GarageEvent", "The Garage Door Is Open", 60, PRIVATE);
                     Serial.println("Changing The Garage Door From Closed To Open");
+                     //publish variable
+                    Particle.variable("DoorStatus", "The Garage Door Is Open");
+       
+                    
                 
                     //turn off LED
                     digitalWrite(led, HIGH);
@@ -89,6 +95,8 @@ void moniterDoor(int startingDoorState){
                     Spark.publish("GarageEvent", "The Garage Door Is Closed", 60, PRIVATE);
                     Serial.println("Changing The Garage Door From Open To Closed");
                 
+                    Particle.variable("DoorStatus", "The Garage Door Is Closed");
+                   
                     //turn off LED
                     digitalWrite(led, LOW);
                     //exit out of while loop
@@ -106,27 +114,3 @@ void moniterDoor(int startingDoorState){
     } //end while
     
 } //end monitorOpenDoor function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
